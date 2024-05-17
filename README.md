@@ -1,4 +1,4 @@
-## about iscsicrawl v1.0
+## about iscsicrawler v1.0
 iscsicrawler is a bash script that crawls files in the iscsi targets with ease.
 
 ## how to use
@@ -8,5 +8,5 @@ iscsicrawler is a bash script that crawls files in the iscsi targets with ease.
 -> if you somehow broke script after start, do umount and disconnect from iscsi target manually.
 
 ## example output
-![](https://raw.githubusercontent.com/crosscutsaw/iscsicrawl/main/1111.PNG)
+![](https://raw.githubusercontent.com/crosscutsaw/iscsicrawler/main/1111.PNG)
 *not tested in customer local infrastructure*
