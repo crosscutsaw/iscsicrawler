@@ -85,17 +85,26 @@ while IFS= read -r line; do
     target_ip=$(echo "$line" | cut -d ':' -f 1)
     target_name=$(echo "$line" | awk '{print $2}')
     iscsiadm --mode node --targetname $target_name --portal $target_ip --login > /dev/null
-    sleep 5    
-    mkdir /tmp/iscsicrawler/mount
-    mount /dev/$(ls -t1 /dev | grep '^s.*2' | head -n 1) /tmp/iscsicrawler/mount
-    echo $line
-    tree /tmp/iscsicrawler/mount
-    echo ''
-    iscsiadm --mode node --targetname $target_name --portal $target_ip -u > /dev/null
-    umount /tmp/iscsicrawler/mount
-    rm -rf /tmp/iscsicrawler/mount
+    sleep 3
+    while IFS= read -r block; do
+        if [ ! -d "/tmp/iscsicrawler/mount" ]; then
+            mkdir /tmp/iscsicrawler/mount
+        else
+            rm -rf /tmp/iscsicrawler/mount
+            mkdir /tmp/iscsicrawler/mount
+        fi
+        mount /dev/$block /tmp/iscsicrawler/mount 2> /dev/null
+        if [ "$(ls -A /tmp/iscsicrawler/mount)" ]; then
+            echo "/dev/$block"
+            echo $line
+            tree /tmp/iscsicrawler/mount
+            echo ''
+            umount /tmp/iscsicrawler/mount 2> /dev/null
+            rm -rf /tmp/iscsicrawler/mount 2> /dev/null
+        fi
+     done < <(ls -t1 /dev | grep '^sd[^a]' | head -n 3)
+     iscsiadm --mode node --targetname $target_name --portal $target_ip -u > /dev/null
 done < /tmp/iscsicrawler/targets.txt
-
 
 # iscsicrawler v1.0
 # 
