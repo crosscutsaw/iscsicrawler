@@ -89,9 +89,6 @@ while IFS= read -r line; do
     while IFS= read -r block; do
         if [ ! -d "/tmp/iscsicrawler/mount" ]; then
             mkdir /tmp/iscsicrawler/mount
-        else
-            rm -rf /tmp/iscsicrawler/mount
-            mkdir /tmp/iscsicrawler/mount
         fi
         mount /dev/$block /tmp/iscsicrawler/mount 2> /dev/null
         if [ "$(ls -A /tmp/iscsicrawler/mount)" ]; then
