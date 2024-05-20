@@ -42,7 +42,6 @@ else
     echo ''
 fi
 
-
 mkdir /tmp/iscsicrawler
 
 echo -e "${bgreen}do you want to scan for iscsi ports or would you provide ip list?${reset}"
@@ -84,6 +83,7 @@ done
 while IFS= read -r line; do
     target_ip=$(echo "$line" | cut -d ':' -f 1)
     target_name=$(echo "$line" | awk '{print $2}')
+    iscsiadm --mode node --targetname $target_name --portal $target_ip -u > /dev/null 2>&1
     iscsiadm --mode node --targetname $target_name --portal $target_ip --login > /dev/null
     sleep 3
     while IFS= read -r block; do
