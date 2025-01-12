@@ -55,7 +55,7 @@ if [ "$response1" = "y" ]; then
     echo ''
     echo -e "${bgreen}scanning iscsi ports. $(date)${reset}"
     nmap -4 -Pn -p 3260 -T5 --open --script iscsi-info.nse -iL kapsam.txt -v0 -oX /tmp/iscsicrawler/portsraw.txt
-    grep -B4 '<script id="iscsi-info"' portsraw.txt | grep 'addrtype="ipv4"' | sed 's|<address addr="\(.*\)" addrtype="ipv4"/>|\1|' >> /tmp/iscsicrawler/ports.txt
+    grep -B4 '<script id="iscsi-info"' /tmp/iscsicrawler/portsraw.txt | grep 'addrtype="ipv4"' | sed 's|<address addr="\(.*\)" addrtype="ipv4"/>|\1|' >> /tmp/iscsicrawler/ports.txt
     rm -rf /tmp/iscsicrawler/portsraw.txt
     echo -e "${bgreen}scan complete. $(date)${reset}"
     echo ""
