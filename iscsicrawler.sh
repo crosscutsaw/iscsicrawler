@@ -7,7 +7,7 @@ bwhite='\033[1;37m'
 reset='\033[0m'
 
 echo ''
-echo -e "${bblue}iscsicrawler v1.0${reset}"
+echo -e "${bblue}iscsicrawler v1.1${reset}"
 echo ''
 
 echo -e "${bbred}removing old files if they are exist or not.${reset}"
@@ -42,6 +42,7 @@ else
     echo ''
 fi
 
+
 mkdir /tmp/iscsicrawler
 
 echo -e "${bgreen}do you want to scan for iscsi ports or would you provide ip list?${reset}"
@@ -53,8 +54,8 @@ read response1
 if [ "$response1" = "y" ]; then
     echo ''
     echo -e "${bgreen}scanning iscsi ports. $(date)${reset}"
-    nmap -p 3260 -T4 -n --open -Pn -oG /tmp/iscsicrawler/portsraw.txt -iL kapsam.txt -v0
-    grep "3260/open" /tmp/iscsicrawler/portsraw.txt | cut -d " " -f2 >> /tmp/iscsicrawler/ports.txt
+    nmap -4 -Pn -p 3260 -T5 --open --script iscsi-info.nse -iL kapsam.txt -v0 -oX /tmp/iscsicrawler/portsraw.txt
+    grep -B4 '<script id="iscsi-info"' portsraw.txt | grep 'addrtype="ipv4"' | sed 's|<address addr="\(.*\)" addrtype="ipv4"/>|\1|' >> /tmp/iscsicrawler/ports.txt
     rm -rf /tmp/iscsicrawler/portsraw.txt
     echo -e "${bgreen}scan complete. $(date)${reset}"
     echo ""
@@ -77,7 +78,7 @@ echo -e "${bgreen}starting iscsi crawl. $(date)${reset}"
 echo ''
 
 for i in $(cat /tmp/iscsicrawler/ports.txt); do
-    iscsiadm -m discovery -t sendtargets -p $i >> /tmp/iscsicrawler/targets.txt
+    iscsiadm -m discovery -t sendtargets -p $i | grep -vE '\[.*\]' >> /tmp/iscsicrawler/targets.txt
 done
 
 while IFS= read -r line; do
@@ -103,7 +104,7 @@ while IFS= read -r line; do
      iscsiadm --mode node --targetname $target_name --portal $target_ip -u > /dev/null
 done < /tmp/iscsicrawler/targets.txt
 
-# iscsicrawler v1.0
+# iscsicrawler v1.1
 # 
 # contact options
 # mail: https://blog.zurrak.com/contact.html
