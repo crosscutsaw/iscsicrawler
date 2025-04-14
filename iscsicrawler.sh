@@ -7,11 +7,23 @@ bwhite='\033[1;37m'
 reset='\033[0m'
 
 echo ''
-echo -e "${bblue}iscsicrawler v1.1${reset}"
+echo -e "${bblue}iscsicrawler v1.2${reset}"
 echo ''
 
 echo -e "${bbred}removing old files if they are exist or not.${reset}"
 rm -rf /tmp/iscsicrawler
+
+if [ -d "/tmp/iscsicrawler" ]; then
+    echo ''
+    echo -e "${bbred}cannot delete old files because you have no privileges against $(ls -ld /tmp/iscsicrawler | awk '{print $3}').${reset}"
+    echo ''
+    echo -e "${bwhite}please switch to root or execute script with sudo if you have certain privileges.${reset}"
+    echo ''
+    echo -e "${bwhite}or execute \"${bgreen}sed -i 's|/tmp/iscsicrawler|/tmp/iscsicrawler2|g' $(pwd)/iscsicrawler.sh${reset}${bwhite}\" command to change iscsicrawler's hardcoded working directory.${reset}"
+    exit
+else
+    :
+fi
 echo ''
 
 echo -e "${bwhite}current working directory is: $(pwd)${reset}"
@@ -104,7 +116,7 @@ while IFS= read -r line; do
      iscsiadm --mode node --targetname $target_name --portal $target_ip -u > /dev/null
 done < /tmp/iscsicrawler/targets.txt
 
-# iscsicrawler v1.1
+# iscsicrawler v1.2
 # 
 # contact options
 # mail: https://blog.zurrak.com/contact.html

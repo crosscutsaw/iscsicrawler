@@ -1,4 +1,4 @@
-## about iscsicrawler v1.1
+## about iscsicrawler v1.2
 iscsicrawler is a bash script that crawls files in the iscsi targets with ease.
 
 ## how to use
